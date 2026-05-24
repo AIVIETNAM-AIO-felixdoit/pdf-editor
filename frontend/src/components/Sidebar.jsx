@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const PAGE_SIZES = ["A2", "A3", "A4", "A5", "Letter", "Legal"];
 
-export default function Sidebar({ file, fileName, sidebarWidth, onResult }) {
+export default function Sidebar({ file, fileName, sidebarWidth, onResult, mobileOpen, onMobileClose }) {
   const [activeTab, setActiveTab] = useState("tools");
   const [extractedText, setExtractedText] = useState(null);
   const [extractedImages, setExtractedImages] = useState(null);
@@ -87,7 +87,10 @@ export default function Sidebar({ file, fileName, sidebarWidth, onResult }) {
   };
 
   return (
-    <div className="sidebar" style={{ width: sidebarWidth }}>
+    <div
+      className={`sidebar${mobileOpen ? " sidebar--mobile-open" : ""}`}
+      style={{ width: sidebarWidth }}
+    >
       {loading && (
         <div className="sidebar-loading">
           <span className="sidebar-loading-spinner" />
@@ -96,6 +99,7 @@ export default function Sidebar({ file, fileName, sidebarWidth, onResult }) {
       )}
       <div className="sidebar-header">
         <p className="sidebar-filename">📄 {fileName}</p>
+        <button className="sidebar-close-btn" onClick={onMobileClose} title="Đóng">✕</button>
       </div>
 
       <div className="sidebar-tabs">

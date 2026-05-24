@@ -21,6 +21,7 @@ export default function Editor() {
   const [fileUrl, setFileUrl] = useState(null);
   const [sidebarWidth, setSidebarWidth] = useState(300);
   const [resultPreview, setResultPreview] = useState(null); // { blob, filename }
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const dragging = useRef(false);
 
   const { file, fileName } = state || {};
@@ -126,12 +127,32 @@ export default function Editor() {
         <button className="download-btn" onClick={handleDownload} title="Tải file hiện tại">
           ⬇ Tải về
         </button>
+        <button
+          className="hamburger-btn"
+          onClick={() => setSidebarOpen((o) => !o)}
+          title="Công cụ"
+        >
+          <span /><span /><span />
+        </button>
       </div>
 
       <div className="editor-body">
         <PDFViewer fileUrl={fileUrl} onTextSelect={handleTextSelect} />
         <div className="resize-handle" onMouseDown={handleMouseDown} />
-        <Sidebar file={file} fileName={fileName} sidebarWidth={sidebarWidth} onResult={(blob, filename) => setResultPreview({ blob, filename })} />
+        {sidebarOpen && (
+          <div
+            className="sidebar-overlay"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+        <Sidebar
+          file={file}
+          fileName={fileName}
+          sidebarWidth={sidebarWidth}
+          onResult={(blob, filename) => setResultPreview({ blob, filename })}
+          mobileOpen={sidebarOpen}
+          onMobileClose={() => setSidebarOpen(false)}
+        />
       </div>
 
       {resultPreview && (
