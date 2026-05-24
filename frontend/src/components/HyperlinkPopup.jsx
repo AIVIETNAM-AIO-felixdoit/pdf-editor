@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export default function HyperlinkPopup({ rect, selectedText, onConfirm, onClose }) {
-  const [url, setUrl] = useState("https://");
+  const [url, setUrl] = useState("");
 
   if (!rect) return null;
 
