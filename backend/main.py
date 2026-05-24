@@ -6,7 +6,7 @@ app = FastAPI(title="PDF Editor API")
 
 ALLOWED_ORIGINS = [
     "http://localhost:5173",           # local dev
-    "https://pdf-editor-pi.vercel.app", # Vercel production (cập nhật sau khi deploy)
+    "https://pdf-editor-prj.vercel.app", # Vercel production
 ]
 
 app.add_middleware(
