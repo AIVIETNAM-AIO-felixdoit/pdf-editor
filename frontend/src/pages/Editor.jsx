@@ -4,6 +4,9 @@ import PDFViewer from "../components/PDFViewer";
 import Sidebar from "../components/Sidebar";
 import HyperlinkPopup from "../components/HyperlinkPopup";
 import { addHyperlink } from "../services/api";
+import axios from "axios";
+
+const API_BASE = "https://pdf-editor-nvmf.onrender.com";
 
 export default function Editor() {
   const { state } = useLocation();
@@ -22,8 +25,17 @@ export default function Editor() {
   useEffect(() => {
     const url = URL.createObjectURL(file);
     setFileUrl(url);
+    // Ping backend để wake up Render free tier
+    axios.get(API_BASE).catch(() => {});
     return () => URL.revokeObjectURL(url);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleDownload = () => {
+    const a = document.createElement("a");
+    a.href = fileUrl;
+    a.download = fileName;
+    a.click();
+  };
 
   const handleTextSelect = ({ text, rect }) => {
     setSelection({ text, rect });
@@ -60,6 +72,9 @@ export default function Editor() {
           ← Back
         </button>
         <span className="editor-title">PDF Editor</span>
+        <button className="download-btn" onClick={handleDownload} title="Tải file hiện tại">
+          ⬇ Tải về
+        </button>
       </div>
 
       <div className="editor-body">

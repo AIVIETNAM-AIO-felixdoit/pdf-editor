@@ -112,6 +112,22 @@ body {
 .editor-title {
   font-size: 16px;
   font-weight: 600;
+  flex: 1;
+}
+
+.download-btn {
+  background: none;
+  border: 1px solid #238636;
+  color: #3fb950;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.download-btn:hover {
+  background-color: #238636;
+  color: #fff;
 }
 
 .editor-body {
