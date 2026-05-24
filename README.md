@@ -9,6 +9,7 @@ A full-stack web application for viewing and editing PDF files directly in the b
 ## Demo
 
 <!-- Insert demo screenshot here -->
+![Dashboard 1](frontend/public/home.png)
 
 ---
 
@@ -39,18 +40,22 @@ A full-stack web application for viewing and editing PDF files directly in the b
 ### Home
 
 <!-- Insert home page screenshot here -->
+![Dashboard 1](frontend/public/home.png)
 
 ### PDF Viewer & Sidebar
 
 <!-- Insert editor screenshot here -->
+![Dashboard 2](frontend/public/editor side.png)
 
 ### Hyperlink Insertion
 
 <!-- Insert hyperlink demo screenshot here -->
+![Dashboard 3](frontend/public/hyperlink.png)
 
 ### Preview Modal
 
 <!-- Insert preview modal screenshot here -->
+![Dashboard 4](frontend/public/modal.png)
 
 ---
 
