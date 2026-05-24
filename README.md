@@ -45,7 +45,7 @@ A full-stack web application for viewing and editing PDF files directly in the b
 ### PDF Viewer & Sidebar
 
 <!-- Insert editor screenshot here -->
-![Dashboard 2](frontend/public/editor side.png)
+![Dashboard 2](frontend/public/editorside.png)
 
 ### Hyperlink Insertion
 
