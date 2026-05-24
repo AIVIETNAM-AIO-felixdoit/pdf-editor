@@ -17,7 +17,10 @@ async def compress_pdf(file: UploadFile = File(...)):
     writer = pypdf.PdfWriter()
 
     for page in reader.pages:
-        page.compress_content_streams()
+        try:
+            page.compress_content_streams()
+        except Exception:
+            pass
         writer.add_page(page)
 
     writer.compress_identical_objects(remove_identicals=True, remove_orphans=True)

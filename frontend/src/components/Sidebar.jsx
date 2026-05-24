@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const PAGE_SIZES = ["A2", "A3", "A4", "A5", "Letter", "Legal"];
 
-export default function Sidebar({ file, fileName, sidebarWidth }) {
+export default function Sidebar({ file, fileName, sidebarWidth, onResult }) {
   const [activeTab, setActiveTab] = useState("tools");
   const [extractedText, setExtractedText] = useState(null);
   const [extractedImages, setExtractedImages] = useState(null);
@@ -11,16 +11,6 @@ export default function Sidebar({ file, fileName, sidebarWidth }) {
   const [splitEnd, setSplitEnd] = useState("");
   const [mergeFiles, setMergeFiles] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const downloadBlob = (data, name) => {
-    const blob = data instanceof Blob ? data : new Blob([data]);
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = name;
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
 
   const handleExtractText = async () => {
     setLoading(true);
@@ -52,7 +42,8 @@ export default function Sidebar({ file, fileName, sidebarWidth }) {
     setLoading(true);
     try {
       const res = await compressPdf(file);
-      downloadBlob(res.data, "compressed.pdf");
+      const blob = res.data instanceof Blob ? res.data : new Blob([res.data]);
+      onResult(blob, "compressed.pdf");
     } catch {
       alert("Lỗi khi nén file");
     } finally {
@@ -69,7 +60,8 @@ export default function Sidebar({ file, fileName, sidebarWidth }) {
     try {
       const allFiles = [file, ...mergeFiles];
       const res = await mergePdfs(allFiles);
-      downloadBlob(res.data, "merged.pdf");
+      const blob = res.data instanceof Blob ? res.data : new Blob([res.data]);
+      onResult(blob, "merged.pdf");
     } catch {
       alert("Lỗi khi merge file");
     } finally {
@@ -81,7 +73,8 @@ export default function Sidebar({ file, fileName, sidebarWidth }) {
     setLoading(true);
     try {
       const res = await splitPdf(file, splitStart, splitEnd || undefined);
-      downloadBlob(res.data, "split.pdf");
+      const blob = res.data instanceof Blob ? res.data : new Blob([res.data]);
+      onResult(blob, "split.pdf");
     } catch {
       alert("Lỗi khi split file");
     } finally {

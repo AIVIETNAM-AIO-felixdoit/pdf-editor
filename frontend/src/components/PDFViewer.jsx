@@ -17,7 +17,25 @@ export default function PDFViewer({ fileUrl, onTextSelect }) {
     if (!text) return;
     const range = selection.getRangeAt(0);
     const rect = range.getBoundingClientRect();
-    onTextSelect && onTextSelect({ text, rect });
+
+    // Dùng canvas element để lấy tọa độ chính xác của trang PDF
+    const canvases = document.querySelectorAll(".react-pdf__Page__canvas");
+    let pageNumber = 1;
+    let pageRect = null;
+    for (let i = 0; i < canvases.length; i++) {
+      const cr = canvases[i].getBoundingClientRect();
+      if (rect.top >= cr.top - 10 && rect.bottom <= cr.bottom + 10) {
+        pageNumber = i + 1;
+        pageRect = cr;
+        break;
+      }
+    }
+    // fallback: lấy canvas gần nhất
+    if (!pageRect && canvases.length > 0) {
+      pageRect = canvases[0].getBoundingClientRect();
+    }
+
+    onTextSelect && onTextSelect({ text, rect, pageNumber, pageRect, scale });
   };
 
   return (

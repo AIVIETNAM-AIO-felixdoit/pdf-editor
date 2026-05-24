@@ -674,6 +674,94 @@ body {
 }
 .bmc-repo-link:hover { text-decoration: underline; }
 
+/* RESULT PREVIEW MODAL */
+.result-preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.result-preview-modal {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 860px;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.result-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid #30363d;
+  flex-shrink: 0;
+}
+
+.result-preview-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e6edf3;
+}
+
+.result-preview-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.rp-btn-download {
+  background-color: #238636;
+  border: none;
+  color: #fff;
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.rp-btn-download:hover { background-color: #2ea043; }
+
+.rp-btn-close {
+  background: none;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.rp-btn-close:hover { border-color: #e6edf3; color: #e6edf3; }
+
+.result-preview-frame {
+  flex: 1;
+  overflow-y: auto;
+  background: #525659;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  gap: 12px;
+}
+
+/* Underline visible for link annotations in preview */
+.result-preview-frame .annotationLayer .linkAnnotation a {
+  border-bottom: 1.5px solid #1a73e8;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* FEEDBACK */
 .feedback-wrapper {
   min-height: 100vh;

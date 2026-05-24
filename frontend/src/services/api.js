@@ -1,7 +1,9 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://pdf-editor-nvmf.onrender.com/api",
+  baseURL: import.meta.env.DEV
+    ? "http://localhost:8000/api"
+    : "https://pdf-editor-nvmf.onrender.com/api",
 });
 
 export const extractText = (file) => {
