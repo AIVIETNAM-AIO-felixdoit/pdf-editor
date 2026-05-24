@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import PDFViewer from "../components/PDFViewer";
 import Sidebar from "../components/Sidebar";
 import HyperlinkPopup from "../components/HyperlinkPopup";
@@ -7,6 +7,8 @@ import { addHyperlink } from "../services/api";
 import axios from "axios";
 
 const API_BASE = "https://pdf-editor-nvmf.onrender.com";
+const SIDEBAR_MIN = 220;
+const SIDEBAR_MAX = 600;
 
 export default function Editor() {
   const { state } = useLocation();
@@ -14,6 +16,8 @@ export default function Editor() {
   const [selection, setSelection] = useState(null);
   const [loading, setLoading] = useState(false);
   const [fileUrl, setFileUrl] = useState(null);
+  const [sidebarWidth, setSidebarWidth] = useState(300);
+  const dragging = useRef(false);
 
   if (!state?.file) {
     navigate("/");
@@ -25,10 +29,33 @@ export default function Editor() {
   useEffect(() => {
     const url = URL.createObjectURL(file);
     setFileUrl(url);
-    // Ping backend để wake up Render free tier
     axios.get(API_BASE).catch(() => {});
     return () => URL.revokeObjectURL(url);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleMouseDown = useCallback((e) => {
+    e.preventDefault();
+    dragging.current = true;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+
+    const onMouseMove = (ev) => {
+      if (!dragging.current) return;
+      const newWidth = window.innerWidth - ev.clientX;
+      setSidebarWidth(Math.min(SIDEBAR_MAX, Math.max(SIDEBAR_MIN, newWidth)));
+    };
+
+    const onMouseUp = () => {
+      dragging.current = false;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+    };
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  }, []);
 
   const handleDownload = () => {
     const a = document.createElement("a");
@@ -79,7 +106,8 @@ export default function Editor() {
 
       <div className="editor-body">
         <PDFViewer fileUrl={fileUrl} onTextSelect={handleTextSelect} />
-        <Sidebar file={file} fileName={fileName} />
+        <div className="resize-handle" onMouseDown={handleMouseDown} />
+        <Sidebar file={file} fileName={fileName} sidebarWidth={sidebarWidth} />
       </div>
 
       {selection && (

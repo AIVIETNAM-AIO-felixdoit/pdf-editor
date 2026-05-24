@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const PAGE_SIZES = ["A2", "A3", "A4", "A5", "Letter", "Legal"];
 
-export default function Sidebar({ file, fileName }) {
+export default function Sidebar({ file, fileName, sidebarWidth }) {
   const [activeTab, setActiveTab] = useState("tools");
   const [extractedText, setExtractedText] = useState(null);
   const [extractedImages, setExtractedImages] = useState(null);
@@ -94,7 +94,7 @@ export default function Sidebar({ file, fileName }) {
   };
 
   return (
-    <div className="sidebar">
+    <div className="sidebar" style={{ width: sidebarWidth }}>
       {loading && (
         <div className="sidebar-loading">
           <span className="sidebar-loading-spinner" />

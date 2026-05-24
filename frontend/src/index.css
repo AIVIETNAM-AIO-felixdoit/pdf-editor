@@ -204,7 +204,7 @@ body {
 
 /* SIDEBAR */
 .sidebar {
-  width: 300px;
+  width: var(--sidebar-width, 300px);
   background-color: #161b22;
   border-left: 1px solid #30363d;
   display: flex;
@@ -212,6 +212,20 @@ body {
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
+}
+
+.resize-handle {
+  width: 5px;
+  flex-shrink: 0;
+  cursor: col-resize;
+  background: transparent;
+  transition: background 0.15s;
+  position: relative;
+  z-index: 5;
+}
+.resize-handle:hover,
+.resize-handle:active {
+  background: #58a6ff44;
 }
 
 .sidebar-loading {
