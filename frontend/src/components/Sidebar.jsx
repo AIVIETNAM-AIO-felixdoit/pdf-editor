@@ -162,20 +162,25 @@ export default function Sidebar({ file, fileName, sidebarWidth }) {
           <div className="tool-section">
             <p className="tool-label">Split trang</p>
             <div className="split-inputs">
-              <input
-                type="number"
-                min={1}
-                value={splitStart}
-                onChange={(e) => setSplitStart(e.target.value)}
-                placeholder="Từ trang"
-              />
-              <input
-                type="number"
-                min={1}
-                value={splitEnd}
-                onChange={(e) => setSplitEnd(e.target.value)}
-                placeholder="Đến trang"
-              />
+              <div className="split-field">
+                <span>Từ trang</span>
+                <input
+                  type="number"
+                  min={1}
+                  value={splitStart}
+                  onChange={(e) => setSplitStart(e.target.value)}
+                />
+              </div>
+              <div className="split-field">
+                <span>Đến trang</span>
+                <input
+                  type="number"
+                  min={1}
+                  value={splitEnd}
+                  onChange={(e) => setSplitEnd(e.target.value)}
+                  placeholder="Cuối"
+                />
+              </div>
             </div>
             <button className="tool-btn" onClick={handleSplit} disabled={loading}>
               Split PDF
