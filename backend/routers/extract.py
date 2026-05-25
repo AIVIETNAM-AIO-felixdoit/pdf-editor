@@ -84,11 +84,11 @@ async def extract_images(file: UploadFile = File(...)):
 @router.post("/text-ai")
 async def extract_text_ai(file: UploadFile = File(...)):
     """Trích xuất văn bản bằng Grok Vision — hỗ trợ tiếng Việt và công thức toán."""
-    api_key = os.environ.get("XAI_API_KEY")
+    api_key = os.environ.get("GROQ_API_KEY")
     if not api_key:
         raise HTTPException(
             status_code=503,
-            detail="AI extraction chưa được cấu hình. Vui lòng thêm XAI_API_KEY vào biến môi trường.",
+            detail="AI extraction chưa được cấu hình. Vui lòng thêm GROQ_API_KEY vào biến môi trường.",
         )
 
     try:
@@ -99,7 +99,7 @@ async def extract_text_ai(file: UploadFile = File(...)):
     contents = await file.read()
     _validate_pdf(contents)
 
-    client = OpenAI(api_key=api_key, base_url="https://api.x.ai/v1")
+    client = OpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1")
 
     doc = fitz.open(stream=contents, filetype="pdf")
     result = []
@@ -112,7 +112,7 @@ async def extract_text_ai(file: UploadFile = File(...)):
 
         try:
             response = client.chat.completions.create(
-                model="grok-2-vision-1212",
+                model="meta-llama/llama-4-scout-17b-16e-instruct",
                 messages=[
                     {
                         "role": "user",
@@ -133,4 +133,4 @@ async def extract_text_ai(file: UploadFile = File(...)):
         result.append({"page": i + 1, "text": text})
 
     doc.close()
-    return JSONResponse(content={"pages": result, "source": "grok"})
+    return JSONResponse(content={"pages": result, "source": "groq"})
