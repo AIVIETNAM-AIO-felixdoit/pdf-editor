@@ -6,7 +6,6 @@ import base64
 import io
 import os
 import re
-import PIL.Image
 
 router = APIRouter()
 
@@ -84,24 +83,23 @@ async def extract_images(file: UploadFile = File(...)):
 
 @router.post("/text-ai")
 async def extract_text_ai(file: UploadFile = File(...)):
-    """Trích xuất văn bản bằng Gemini Vision — hỗ trợ tiếng Việt và công thức toán."""
-    api_key = os.environ.get("GEMINI_API_KEY")
+    """Trích xuất văn bản bằng Grok Vision — hỗ trợ tiếng Việt và công thức toán."""
+    api_key = os.environ.get("XAI_API_KEY")
     if not api_key:
         raise HTTPException(
             status_code=503,
-            detail="AI extraction chưa được cấu hình. Vui lòng thêm GEMINI_API_KEY vào biến môi trường.",
+            detail="AI extraction chưa được cấu hình. Vui lòng thêm XAI_API_KEY vào biến môi trường.",
         )
 
     try:
-        import google.generativeai as genai
+        from openai import OpenAI
     except ImportError:
-        raise HTTPException(status_code=503, detail="Thư viện google-generativeai chưa được cài đặt.")
+        raise HTTPException(status_code=503, detail="Thư viện openai chưa được cài đặt.")
 
     contents = await file.read()
     _validate_pdf(contents)
 
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    client = OpenAI(api_key=api_key, base_url="https://api.x.ai/v1")
 
     doc = fitz.open(stream=contents, filetype="pdf")
     result = []
@@ -110,15 +108,29 @@ async def extract_text_ai(file: UploadFile = File(...)):
         # Render trang thành ảnh PNG ở ~108 DPI (scale 1.5)
         mat = fitz.Matrix(1.5, 1.5)
         pix = page.get_pixmap(matrix=mat, alpha=False)
-        img = PIL.Image.open(io.BytesIO(pix.tobytes("png")))
+        b64_img = base64.b64encode(pix.tobytes("png")).decode()
 
         try:
-            response = model.generate_content([_EXTRACT_AI_PROMPT, img])
-            text = (response.text or "").strip()
+            response = client.chat.completions.create(
+                model="grok-2-vision-1212",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": _EXTRACT_AI_PROMPT},
+                            {
+                                "type": "image_url",
+                                "image_url": {"url": f"data:image/png;base64,{b64_img}"},
+                            },
+                        ],
+                    }
+                ],
+            )
+            text = (response.choices[0].message.content or "").strip()
         except Exception as e:
             text = f"[Lỗi xử lý trang {i + 1}: {e}]"
 
         result.append({"page": i + 1, "text": text})
 
     doc.close()
-    return JSONResponse(content={"pages": result, "source": "ai"})
+    return JSONResponse(content={"pages": result, "source": "grok"})
