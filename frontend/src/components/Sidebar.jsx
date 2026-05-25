@@ -155,7 +155,7 @@ export default function Sidebar({ file, fileName, sidebarWidth, onResult, mobile
             <button className="tool-btn" onClick={handleExtractText} disabled={loading}>
               Trích xuất văn bản
             </button>
-            <button className="tool-btn tool-btn--ai" onClick={handleExtractTextAI} disabled={loading}>
+            <button className="tool-btn" onClick={handleExtractTextAI} disabled={loading}>
               Trích xuất AI
             </button>
             <p className="tool-hint">AI nhận dạng tốt hơn với tiếng Việt &amp; công thức toán (LaTeX)</p>
