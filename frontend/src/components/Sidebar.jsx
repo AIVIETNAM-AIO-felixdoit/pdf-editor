@@ -1,4 +1,4 @@
-import { extractText, extractImages, compressPdf, splitPdf, mergePdfs } from "../services/api";
+import { extractText, extractTextAI, extractImages, compressPdf, splitPdf, mergePdfs } from "../services/api";
 import { useState } from "react";
 
 const PAGE_SIZES = ["A2", "A3", "A4", "A5", "Letter", "Legal"];
@@ -6,6 +6,7 @@ const PAGE_SIZES = ["A2", "A3", "A4", "A5", "Letter", "Legal"];
 export default function Sidebar({ file, fileName, sidebarWidth, onResult, mobileOpen, onMobileClose }) {
   const [activeTab, setActiveTab] = useState("tools");
   const [extractedText, setExtractedText] = useState(null);
+  const [extractedTextAI, setExtractedTextAI] = useState(null);
   const [extractedImages, setExtractedImages] = useState(null);
   const [splitStart, setSplitStart] = useState(1);
   const [splitEnd, setSplitEnd] = useState("");
@@ -20,6 +21,20 @@ export default function Sidebar({ file, fileName, sidebarWidth, onResult, mobile
       setActiveTab("result-text");
     } catch {
       alert("Lỗi khi trích xuất văn bản");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleExtractTextAI = async () => {
+    setLoading(true);
+    try {
+      const res = await extractTextAI(file);
+      setExtractedTextAI(res.data.pages);
+      setActiveTab("result-ai");
+    } catch (err) {
+      const msg = err?.response?.data?.detail || "Lỗi khi trích xuất AI";
+      alert(msg);
     } finally {
       setLoading(false);
     }
@@ -117,6 +132,14 @@ export default function Sidebar({ file, fileName, sidebarWidth, onResult, mobile
           Text
         </button>
         <button
+          className={activeTab === "result-ai" ? "tab active" : "tab"}
+          onClick={() => setActiveTab("result-ai")}
+          disabled={!extractedTextAI}
+          title="Kết quả trích xuất AI"
+        >
+          AI
+        </button>
+        <button
           className={activeTab === "result-images" ? "tab active" : "tab"}
           onClick={() => setActiveTab("result-images")}
           disabled={!extractedImages}
@@ -132,6 +155,10 @@ export default function Sidebar({ file, fileName, sidebarWidth, onResult, mobile
             <button className="tool-btn" onClick={handleExtractText} disabled={loading}>
               Trích xuất văn bản
             </button>
+            <button className="tool-btn tool-btn--ai" onClick={handleExtractTextAI} disabled={loading}>
+              🤖 Trích xuất AI
+            </button>
+            <p className="tool-hint">AI nhận dạng tốt hơn với tiếng Việt &amp; công thức toán (LaTeX)</p>
             <button className="tool-btn" onClick={handleExtractImages} disabled={loading}>
               Trích xuất hình ảnh
             </button>
@@ -214,6 +241,20 @@ export default function Sidebar({ file, fileName, sidebarWidth, onResult, mobile
             <div key={p.page} className="result-page">
               <p className="result-page-label">Trang {p.page}</p>
               <p className="result-page-text">{p.text || "Không có văn bản"}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === "result-ai" && extractedTextAI && (
+        <div className="sidebar-result">
+          <p className="result-ai-note">
+            📐 Công thức toán được đánh dấu bằng <code>$...$</code> (inline) hoặc <code>$$...$$</code> (block)
+          </p>
+          {extractedTextAI.map((p) => (
+            <div key={p.page} className="result-page">
+              <p className="result-page-label">Trang {p.page}</p>
+              <pre className="result-page-text result-page-text--ai">{p.text || "Không có văn bản"}</pre>
             </div>
           ))}
         </div>

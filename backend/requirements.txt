@@ -1,4 +1,5 @@
 annotated-types==0.7.0
+google-generativeai
 anyio==4.13.0
 cffi==2.0.0
 charset-normalizer==3.4.7

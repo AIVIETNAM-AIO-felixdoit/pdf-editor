@@ -12,6 +12,12 @@ export const extractText = (file) => {
   return API.post("/extract/text", form);
 };
 
+export const extractTextAI = (file) => {
+  const form = new FormData();
+  form.append("file", file);
+  return API.post("/extract/text-ai", form);
+};
+
 export const extractImages = (file) => {
   const form = new FormData();
   form.append("file", file);

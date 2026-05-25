@@ -491,6 +491,55 @@ body {
   white-space: pre-wrap;
 }
 
+/* AI extraction result */
+.result-page-text--ai {
+  font-family: inherit;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin: 0;
+  color: #c9d1d9;
+  font-size: 12.5px;
+}
+
+.result-ai-note {
+  font-size: 11px;
+  color: #8b949e;
+  background: #21262d;
+  border-left: 3px solid #388bfd;
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.result-ai-note code {
+  background: #30363d;
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: #79c0ff;
+  font-size: 11px;
+}
+
+/* AI button style */
+.tool-btn--ai {
+  border-color: #388bfd;
+  color: #79c0ff;
+}
+
+.tool-btn--ai:hover {
+  background-color: #1158c7;
+  color: #fff;
+}
+
+.tool-hint {
+  font-size: 11px;
+  color: #6e7681;
+  margin: -4px 0 6px 0;
+  line-height: 1.4;
+}
+
 .image-card {
   background-color: #21262d;
   border: 1px solid #30363d;
