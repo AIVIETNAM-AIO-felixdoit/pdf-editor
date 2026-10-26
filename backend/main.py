@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import extract, merge_split, compress, hyperlink
+from routers import extract, merge_split, compress, hyperlink, watermark
 
 app = FastAPI(title="PDF Editor API")
 
@@ -21,6 +21,8 @@ app.include_router(extract.router, prefix="/api/extract", tags=["Extract"])
 app.include_router(merge_split.router, prefix="/api/merge-split", tags=["Merge & Split"])
 app.include_router(compress.router, prefix="/api/compress", tags=["Compress"])
 app.include_router(hyperlink.router, prefix="/api/hyperlink", tags=["Hyperlink"])
+
+app.include_router(watermark.router, prefix="/api/watermark", tags=["Watermark"])
 
 @app.get("/")
 def root():

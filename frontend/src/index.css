@@ -1065,3 +1065,22 @@ body {
   border-top: 1px solid #30363d;
   padding-top: 16px;
 }
+/* Watermark selection and comparison */
+.watermark-panel { border-bottom: 1px solid #30363d; padding-bottom: 20px; }
+.watermark-range { display: grid; gap: 6px; font-size: 13px; }
+.watermark-range input { background: #0d1117; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px; padding: 8px; width: 100%; }
+.watermark-candidates { max-height: 340px; overflow-y: auto; display: grid; gap: 8px; }
+.watermark-candidate { display: grid; gap: 8px; padding: 10px; background: #0d1117; border-radius: 6px; }
+.watermark-candidate label { display: flex; gap: 8px; align-items: flex-start; font-size: 12px; overflow-wrap: anywhere; }
+.watermark-candidate input { margin-top: 2px; }
+.watermark-error { color: #ff9292; font-size: 13px; }
+.watermark-notice { padding: 12px 20px; font-size: 13px; }
+.watermark-comparison { overflow: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
+.watermark-comparison figure { min-width: 0; }
+.watermark-comparison figcaption { text-align: center; margin-bottom: 8px; }
+.watermark-comparison img { width: 100%; height: auto; background: white; }
+@media (max-width: 600px) {
+  .watermark-comparison { grid-template-columns: 1fr; }
+  .result-preview-header { flex-wrap: wrap; gap: 10px; }
+  .result-preview-actions { flex-wrap: wrap; }
+}

@@ -24,7 +24,9 @@ export default function Editor() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const dragging = useRef(false);
 
-  const { file, fileName } = state || {};
+  const [currentFile, setCurrentFile] = useState(state?.file || null);
+  const file = currentFile;
+  const fileName = currentFile?.name || state?.fileName;
 
   useEffect(() => {
     if (!file) {
@@ -32,12 +34,12 @@ export default function Editor() {
       return;
     }
     const url = URL.createObjectURL(file);
-    setFileUrl(url);
+    let active = true;
+    queueMicrotask(() => { if (active) setFileUrl(url); });
     axios.get(API_BASE).catch(() => {});
-    return () => URL.revokeObjectURL(url);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    return () => { active = false; URL.revokeObjectURL(url); };
+  }, [file, navigate]);
 
-  if (!file) return null;
 
   const handleMouseDown = useCallback((e) => {
     e.preventDefault();
@@ -117,6 +119,8 @@ export default function Editor() {
     }
   };
 
+  if (!file) return null;
+
   return (
     <div className="editor-layout">
       <div className="editor-navbar">
@@ -127,6 +131,13 @@ export default function Editor() {
         <button className="download-btn" onClick={handleDownload} title="Tải file hiện tại">
           ⬇ Tải về
         </button>
+        {currentFile !== state?.file && (
+          <button className="back-btn" onClick={() => {
+            setCurrentFile(state.file);
+            setSelection(null);
+            setResultPreview(null);
+          }}>Khôi phục bản gốc</button>
+        )}
         <button
           className="hamburger-btn"
           onClick={() => setSidebarOpen((o) => !o)}
@@ -137,7 +148,7 @@ export default function Editor() {
       </div>
 
       <div className="editor-body">
-        <PDFViewer fileUrl={fileUrl} onTextSelect={handleTextSelect} />
+        <PDFViewer fileUrl={fileUrl} onTextSelect={loading ? undefined : handleTextSelect} />
         <div className="resize-handle" onMouseDown={handleMouseDown} />
         {sidebarOpen && (
           <div
@@ -146,6 +157,7 @@ export default function Editor() {
           />
         )}
         <Sidebar
+          key={fileUrl}
           file={file}
           fileName={fileName}
           sidebarWidth={sidebarWidth}
@@ -159,6 +171,11 @@ export default function Editor() {
         <ResultPreview
           blob={resultPreview.blob}
           filename={resultPreview.filename}
+          onApply={() => {
+            setCurrentFile(new File([resultPreview.blob], resultPreview.filename, { type: "application/pdf" }));
+            setSelection(null);
+            setResultPreview(null);
+          }}
           onClose={() => setResultPreview(null)}
         />
       )}

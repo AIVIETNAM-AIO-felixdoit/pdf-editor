@@ -1,3 +1,4 @@
+import WatermarkPanel from "./WatermarkPanel";
 import { extractText, extractTextAI, extractImages, compressPdf, splitPdf, mergePdfs } from "../services/api";
 import { useState } from "react";
 
@@ -150,6 +151,7 @@ export default function Sidebar({ file, fileName, sidebarWidth, onResult, mobile
 
       {activeTab === "tools" && (
         <div className="sidebar-tools">
+          <WatermarkPanel file={file} onResult={onResult} />
           <div className="tool-section">
             <p className="tool-label">Trích xuất</p>
             <button className="tool-btn" onClick={handleExtractText} disabled={loading}>

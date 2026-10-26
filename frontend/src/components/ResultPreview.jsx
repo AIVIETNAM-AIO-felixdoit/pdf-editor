@@ -6,15 +6,16 @@ import "react-pdf/dist/Page/TextLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
-export default function ResultPreview({ blob, filename, onClose }) {
+export default function ResultPreview({ blob, filename, onClose, onApply }) {
   const [url, setUrl] = useState(null);
   const [numPages, setNumPages] = useState(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
     const u = URL.createObjectURL(blob);
-    setUrl(u);
-    return () => URL.revokeObjectURL(u);
+    let active = true;
+    queueMicrotask(() => { if (active) setUrl(u); });
+    return () => { active = false; URL.revokeObjectURL(u); };
   }, [blob]);
 
   // Watch for annotation links added by react-pdf and force open in new tab
@@ -49,6 +50,7 @@ export default function ResultPreview({ blob, filename, onClose }) {
         <div className="result-preview-header">
           <span className="result-preview-name">📄 {filename}</span>
           <div className="result-preview-actions">
+            {onApply && <button className="rp-btn-download" disabled={!url} onClick={onApply}>Áp dụng</button>}
             <button className="rp-btn-download" onClick={handleDownload}>
               ⬇ Tải về
             </button>

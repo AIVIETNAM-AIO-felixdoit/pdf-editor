@@ -55,3 +55,18 @@ export const addHyperlink = (file, page, url, x, y, width, height) => {
   form.append("height", height);
   return API.post("/hyperlink/add", form, { responseType: "blob" });
 };
+
+export const analyzeWatermarks = (file, signal) => {
+  const form = new FormData();
+  form.append("file", file);
+  return API.post("/watermark/analyze", form, { signal });
+};
+
+export const processWatermarks = (file, options, preview = false, signal) => {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("options", JSON.stringify(options));
+  return API.post(preview ? "/watermark/preview" : "/watermark/remove", form, {
+    responseType: preview ? "json" : "blob", signal,
+  });
+};
